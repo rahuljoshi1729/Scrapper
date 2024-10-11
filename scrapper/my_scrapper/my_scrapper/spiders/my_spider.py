@@ -21,8 +21,7 @@ class myspider(scrapy.Spider):
     
     def heat_mapping(self,response):
         heatmap_data_by_month = defaultdict(list)
-        print(response.css("div.heatmap-content rect.day"))
-        print("hello")
+        print(response.css("rect.day"))
         for rec in response.css("rect.day"):
             
             date = rec.attrib.get('data-date')
@@ -112,15 +111,15 @@ class myspider(scrapy.Spider):
             plan=response.css("section.user-details li:contains('CodeChef Pro Plan:') span::text").get().split('.')[0] or response.xpath("//label[text()='CodeChef Pro Plan:']/following-sibling::span/text()").get().strip().split('.')[0].strip()
         else:
             plan=None    
-            
+        """      
         for month, days_data in heat_map.items():
             yield {
                 'month': month,
                 'data': days_data
             }    
+        """
         
-        
-        '''yield {
+        yield {
             'rating': rating,
             'rating_number': rating_number,
             'division':division,
@@ -138,4 +137,4 @@ class myspider(scrapy.Spider):
             "all_contest":all_contest,
             "total_question":total_questions, 
             "heat_map":heat_map
-        }'''
+        }
