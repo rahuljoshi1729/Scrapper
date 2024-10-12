@@ -1,13 +1,17 @@
 import scrapy 
-from collections import defaultdict
-from datetime import datetime
-
-class myspider(scrapy.Spider):
+from scrapy_splash import SplashRequest
+import json
+import re
+class my_spider(scrapy.Spider):
     name = "my_spider"
     # The username will be passed through the crawl command
     def __init__(self, username='', **kwargs):
         self.start_urls = [f'https://www.codechef.com/users/{username}']
         super().__init__(**kwargs)
+    
+    def start_requests(self):
+        for url in self.start_urls:
+            yield SplashRequest(url, self.parse, args={'wait': 2}, endpoint='render.html')    
         
     def contesting(self,response):
         all_contest=[]
@@ -19,26 +23,44 @@ class myspider(scrapy.Spider):
             all_contest.append(contest_dict) 
         return all_contest
     
-    def heat_mapping(self,response):
-        heatmap_data_by_month = defaultdict(list)
-        print(response.css("rect.day"))
-        for rec in response.css("rect.day"):
-            
-            date = rec.attrib.get('data-date')
-            data_count = rec.attrib.get('data-count', '0')  # Default to '0' if no submission
-            category = rec.attrib.get('category', '0')      # Default to '0' if no category
-            
-            # Parse the date and get the month
-            parsed_date = datetime.strptime(date, '%Y-%m-%d')
-            month_key = parsed_date.strftime('%Y-%m')  # Format the month as YYYY-MM
-            
-            heatmap_data_by_month[month_key].append({
-                'date': date,
-                'data_count': data_count,
-                'category': category})
-        return heatmap_data_by_month    
+    def extract_submissions(self, response):
+    # Extract the script content that contains 'userDailySubmissionsStats'
+        script_content = response.xpath("//script[contains(text(), 'userDailySubmissionsStats')]/text()").get()
+        print(script_content)
         
+        if script_content:
+            # Use regex to locate and extract the JSON-like array within 'userDailySubmissionsStats'
+            pattern = re.compile(r"userDailySubmissionsStats\s*=\s*(\[\{.*?\}\])\s*;", re.DOTALL)
+            match = pattern.search(script_content)
+            print(match)
+            
+            if match:
+                json_data = match.group(1)
+                daily_submissions = json.loads(json_data)
+                return daily_submissions
         
+        return None
+    
+    #extracting rating
+    def extract_rating(self,response):
+        script_content = response.xpath("//script[contains(text(), 'all_rating')]/text()").get()
+        
+        if script_content:
+            #using regex
+            pattern = re.compile(r"all_rating\s*=\s*(\[\{.*?\}\])\s*;", re.DOTALL)
+            match =pattern.search(script_content)
+            
+            if match:
+                json_data=match.group(1)
+                try:
+                    all_ratings=json.loads(json_data)
+                    return all_ratings
+                except json.JSONDecodeError as e:
+                    print(f"Error while decoding JSON: {e}")
+        return None
+    
+    
+    
     def parse(self,response):
         user_details_list = response.css("section.user-details label::text").extract()
         print(user_details_list)
@@ -59,15 +81,14 @@ class myspider(scrapy.Spider):
             #No. of contest participated
             contest_participated=response.css("div.contest-participated-count b::text").get(default=None) or response.xpath("/html/body/main/div/div/div/div/div/section[3]/div[1]/div/b/text()").get(default=None)
             
-            #function to extract contest details
-            #all_contest=self.contesting(response)
-            all_contest=None
             
             #total questions solved
             total_questions=response.xpath("/html/body/main/div/div/div/div/div/section[4]/h3[4]/text()").get(default=None)
             
-            #heat map data
-            heat_map=self.heat_mapping(response)
+            #extracting daily submissions
+            daily_submissions=self.extract_submissions(response)
+            all_ratings=self.extract_rating(response)
+                
             
         else:
             username = response.css("section.user-details li:contains('Username:') span::text").get() or response.xpath("//label[text()='Username:']/following-sibling::span/text()").get()
@@ -77,9 +98,11 @@ class myspider(scrapy.Spider):
             global_rank=None
             country_rank=None
             contest_participated=None
-            all_contest=None
+
             total_questions=response.xpath("//h3[contains(text(), 'Total Problems Solved')]/text()").get(default=None)
-            heat_map=None
+    
+            daily_submissions=None
+            all_ratings=None
 
             
             
@@ -134,7 +157,7 @@ class myspider(scrapy.Spider):
             'country_rank':country_rank,
             'global_rank':global_rank,
             'contest_participated':contest_participated,
-            "all_contest":all_contest,
             "total_question":total_questions, 
-            "heat_map":heat_map
+            "daily_submissions":daily_submissions,
+            "all_ratings":all_ratings
         }
