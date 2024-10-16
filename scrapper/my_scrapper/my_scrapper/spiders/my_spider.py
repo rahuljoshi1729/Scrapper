@@ -26,13 +26,10 @@ class my_spider(scrapy.Spider):
     def extract_submissions(self, response):
     # Extract the script content that contains 'userDailySubmissionsStats'
         script_content = response.xpath("//script[contains(text(), 'userDailySubmissionsStats')]/text()").get()
-        print(script_content)
-        
         if script_content:
             # Use regex to locate and extract the JSON-like array within 'userDailySubmissionsStats'
             pattern = re.compile(r"userDailySubmissionsStats\s*=\s*(\[\{.*?\}\])\s*;", re.DOTALL)
             match = pattern.search(script_content)
-            print(match)
             
             if match:
                 json_data = match.group(1)
@@ -44,7 +41,6 @@ class my_spider(scrapy.Spider):
     #extracting rating
     def extract_rating(self,response):
         script_content = response.xpath("//script[contains(text(), 'all_rating')]/text()").get()
-        
         if script_content:
             #using regex
             pattern = re.compile(r"all_rating\s*=\s*(\[\{.*?\}\])\s*;", re.DOTALL)
