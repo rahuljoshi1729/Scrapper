@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path,include
 from leetcode.urls import urlpatterns as leetcode_urls
 from codeforces.urls import urlpatterns as codeforces_urls
+from github.urls import urlpatterns as github_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('leetcode/', include(leetcode_urls)),
     path('codeforces/', include(codeforces_urls)),
+    path('github/', include(github_urls)),
 ]
