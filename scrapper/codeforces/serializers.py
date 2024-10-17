@@ -1,33 +1,44 @@
 from rest_framework import serializers
 from datetime import datetime
 
+
 class userdataserializer(serializers.Serializer):
-    firstName = serializers.CharField(source='firstName')
-    lastName = serializers.CharField(source='lastName')
-    country = serializers.CharField(source='country')
-    city = serializers.CharField(source='city')
-    rating = serializers.IntegerField(source='rating')
-    maxRating = serializers.IntegerField(source='maxRating')
-    rank = serializers.CharField(source='rank')
-    maxRank = serializers.CharField(source='maxRank')
-    contribution = serializers.IntegerField(source='contribution')
-    handle = serializers.CharField(source='handle')
-    friendOfCount = serializers.IntegerField(source='friendOfCount')
-    titlePhoto = serializers.CharField(source='titlePhoto')
-    avatar = serializers.CharField(source='avatar')
-    organization = serializers.CharField(source='organization')
-    registrationTime = serializers.SerializerMethodField(source='registrationTimeSeconds', format='%Y-%m-%d %H:%M:%S')
-    lastOnlineTime = serializers.SerializerMethodField(source='lastOnlineTimeSeconds',format='%Y-%m-%d %H:%M:%S')
+    firstName = serializers.CharField()
+    lastName = serializers.CharField()
+    country = serializers.CharField()
+    city = serializers.CharField()
+    rating = serializers.IntegerField()
+    maxRating = serializers.IntegerField()
+    rank = serializers.CharField()
+    maxRank = serializers.CharField()
+    contribution = serializers.IntegerField()
+    handle = serializers.CharField()
+    friendOfCount = serializers.IntegerField()
+    titlePhoto = serializers.CharField()
+    avatar = serializers.CharField()
+    organization = serializers.CharField()
+    registrationTime = serializers.SerializerMethodField()
+    lastOnlineTime = serializers.SerializerMethodField()
+    
+    def registrationTime(self, obj):
+        return datetime.fromtimestamp(obj['registrationTimeSeconds']).strftime('%Y-%m-%d %H:%M:%S')
+
+    def lastOnlineTime(self, obj):
+        return datetime.fromtimestamp(obj['lastOnlineTimeSeconds']).strftime('%Y-%m-%d %H:%M:%S')
 
 class submissionserializer(serializers.Serializer):
-    contest_id = serializers.IntegerField(source='contestId')
-    creation_time = serializers.DateTimeField(source='creationTimeSeconds', format='%Y-%m-%d %H:%M:%S')
+    contestId = serializers.IntegerField()
+    creationTimeSeconds = serializers.CharField()
+    
 
 class ratingserializer(serializers.Serializer):
-    contestId = serializers.IntegerField(source='contestId')
-    contestName = serializers.CharField(source='contestName')
-    handle = serializers.CharField(source='handle')
-    rank = serializers.IntegerField(source='rank')
-    oldRating = serializers.IntegerField(source='oldRating')
-    newRating = serializers.IntegerField(source='newRating')
-    ratingUpdateTime = serializers.SerializerMethodField(source='ratingUpdateTimeSeconds',format='%Y-%m-%d %H:%M:%S')
+    contestId = serializers.IntegerField()
+    contestName = serializers.CharField()
+    handle = serializers.CharField()
+    rank = serializers.IntegerField()
+    oldRating = serializers.IntegerField()
+    newRating = serializers.IntegerField()
+    ratingUpdateTime = serializers.SerializerMethodField()
+    
+    def ratingUpdateTime(self, obj):
+        return datetime.fromtimestamp(obj['ratingUpdateTimeSeconds']).strftime('%Y-%m-%d %H:%M:%S')
