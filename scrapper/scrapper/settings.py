@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'my_scrapper',
     'github',
     'leetcode',       
+    'codeforces',
 ]
 
 MIDDLEWARE = [
