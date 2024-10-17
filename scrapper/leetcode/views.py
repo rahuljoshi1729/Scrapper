@@ -135,10 +135,10 @@ class userprofile(APIView):
                     contest_ranking_history = result['data']['userContestRankingHistory']
                     attended_contests = [contest for contest in contest_ranking_history if contest['attended']]
                     
-                    # Combine the data you need to return
+                    #response data
                     response_data = {
                         **result['data'],
-                        'userContestRankingHistory': attended_contests  # Only include attended contests
+                        'userContestRankingHistory': attended_contests  
                     }
                     return Response(response_data, status=status.HTTP_200_OK)
             except Exception as e:
