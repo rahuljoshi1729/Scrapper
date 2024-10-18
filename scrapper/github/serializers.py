@@ -1,0 +1,51 @@
+from rest_framework import serializers
+
+class userserializer(serializers.Serializer):
+    login = serializers.CharField()
+    id=serializers.IntegerField()
+    node_id=serializers.CharField()
+    avatar_url=serializers.URLField()
+    html_url=serializers.URLField()
+    followers_url=serializers.URLField()
+    organizations_url=serializers.URLField()
+    repos_url=serializers.URLField()
+    type=serializers.CharField()
+    public_repos=serializers.IntegerField()
+    followers=serializers.IntegerField()
+    following=serializers.IntegerField()
+    created_at=serializers.DateTimeField()
+    updated_at=serializers.DateTimeField()
+    
+class data_followerserializer(serializers.Serializer):
+    login = serializers.CharField()
+    id=serializers.IntegerField()
+    node_id=serializers.CharField()
+    avatar_url=serializers.URLField()
+    html_url=serializers.URLField()
+    organizations_url=serializers.URLField()
+    repos_url=serializers.URLField()
+    
+class contributorserializer(serializers.Serializer):
+    login = serializers.CharField()
+    id=serializers.IntegerField()
+    node_id=serializers.CharField()
+    avatar_url=serializers.URLField()
+    html_url=serializers.URLField()
+    organizations_url=serializers.URLField()
+    repos_url=serializers.URLField()
+class reposerializer(serializers.Serializer):
+    id=serializers.IntegerField()
+    node_id=serializers.CharField()
+    name=serializers.CharField()
+    full_name=serializers.CharField()
+    private=serializers.BooleanField()
+    html_url=serializers.URLField()
+    description=serializers.CharField(allow_null=True, allow_blank=True)    
+    fork=serializers.BooleanField()
+    contributors_url=serializers.URLField()
+    deployments_url=serializers.URLField()
+    created_at=serializers.DateTimeField()
+    updated_at=serializers.DateTimeField()
+    pushed_at=serializers.DateTimeField()
+    forks_count=serializers.IntegerField()
+    
