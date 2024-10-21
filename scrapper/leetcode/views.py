@@ -6,6 +6,7 @@ import requests
 import json
 
 #code to extract using API GRAPHQL
+#a new data has been added to the response data
 class userprofile(APIView):
     def post(self, request):
         try:
