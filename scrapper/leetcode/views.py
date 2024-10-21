@@ -5,6 +5,7 @@ from rest_framework import status
 import requests
 import json
 
+#code to extract using API GRAPHQL
 class userprofile(APIView):
     def post(self, request):
         try:
