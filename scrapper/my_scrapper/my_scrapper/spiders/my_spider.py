@@ -59,7 +59,6 @@ class my_spider(scrapy.Spider):
     
     def parse(self,response):
         user_details_list = response.css("section.user-details label::text").extract()
-        print(user_details_list)
         #extracting the rating and username
         rating = response.css("section.user-details span.rating::text").get()
         if rating:
